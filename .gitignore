@@ -1,0 +1,8 @@
+# --- LaTeX ---
+*.aux *.log *.out *.toc *.lof *.lot *.bbl *.blg *.xdv *.synctex.gz
+*.fdb_latexmk *.fls *.pdf   # <-- si quieres excluir PDFs generados
+# --- Node ---
+node_modules/
+.env                         # nunca subas claves API
+# --- Otros temporales ---
+*.zip *.tmp

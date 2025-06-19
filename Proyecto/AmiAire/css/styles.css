@@ -1,0 +1,92 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+#map {
+    height: 500px;
+    border-radius: 8px;
+}
+
+.card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .9rem;
+}
+.leyenda-color {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  border: 1px solid #333;
+  border-radius: 3px;
+}
+
+.leyenda-color.extremo   { background:#d73027; }
+.leyenda-color.alto      { background:#fc8d59; }
+.leyenda-color.moderado  { background:#fee08b; }
+.leyenda-color.bueno     { background:#1a9850; }
+.leyenda-color.bajo      { background:#91cf60; } 
+
+.sensor-detail-img {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#detalle-sensor {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Pequeño sombreado mientras carga */
+#loading-spinner { backdrop-filter: blur(2px); }
+
+:root{
+  --ami-azul:#0a2f4d;       /* tono oscuro cabecera */
+  --ami-azul-claro:#0f4d80;
+  --ami-oro:#ff9a00;        /* botones + acentos */
+  --ami-gris:#f5f7f9;
+  --font-base:"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+body      { font-family:var(--font-base); background:var(--ami-gris); }
+#main-bar { background:#fff; }
+#main-bar .nav-link        { color:var(--ami-azul); font-weight:500; }
+#main-bar .nav-link.active { color:var(--ami-oro); }
+
+.marca-texto { color:var(--ami-azul); }
+
+h1,h2,h3,h4,h5 { color:var(--ami-azul); }
+
+.btn-primary  { background:var(--ami-azul-claro); border:none; }
+.btn-success  { background:var(--ami-oro); border:none; }
+.btn-warning  { background:#ffb84d;   border:none; color:#212529; }
+
+.card-header.bg-success { background:var(--ami-azul-claro)!important; }
+
+.btn-primary:hover,
+.btn-success:hover,
+.btn-warning:hover { opacity:.85; }
+
+#map { border:2px solid var(--ami-azul-claro); }
+
+p.text-muted { font-size:.95rem; }
+
+@media (max-width: 767px){
+  #main-bar img { height:32px; }
+  .btn-lg { font-size:1rem; padding:.5rem 1rem; }
+}
+

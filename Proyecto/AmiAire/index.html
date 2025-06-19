@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitorización de Calidad del Aire</title>
+
+    <!-- ======  ESTILOS  ====== -->
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Leaflet -->
+    <link href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet">
+    <!-- Bootstrap-Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Tu hoja de estilos -->
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- ⬇️ LOADER global -->
+    <div id="loading-spinner" class="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-none" style="z-index:1050">
+        <div class="spinner-border text-primary" role="status" style="width:4rem;height:4rem">
+            <span class="visually-hidden">Cargando…</span>
+        </div>
+    </div>
+
+    <!-- ======  NAV BAR  ====== -->
+<header class="navbar navbar-light shadow-sm px-3 py-1" id="main-bar">
+  <a class="d-flex align-items-center text-dark text-decoration-none" href="/">
+    <img src="img/logo.png" alt="AmIAire" height="40" class="me-2">
+    
+  </a>
+
+  
+</header>
+
+
+    <!-- ======  CONTENIDO PRINCIPAL  ====== -->
+    <div class="container mt-4">
+        <div class="row">
+            <!--  MAPA  -->
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white"><h5>Mapa de Sensores</h5></div>
+                    <div class="card-body">
+
+    <!-- Botones de tipo de mapa -->
+    <div class="d-flex justify-content-end mb-2">
+        <button id="btn-normalmap" class="btn btn-outline-primary me-2">Mapa Normal</button>
+        <button id="btn-heatmap"  class="btn btn-outline-primary">Ver Mapa de Calor</button>
+    </div>
+
+    <!-- Explicación 1 -->
+    <p class="text-muted small mb-1">Añade la ciudad y el perímetro que quieras filtrar:</p>
+
+    <!-- Línea: ciudad + radio -->
+    <div class="d-flex flex-wrap align-items-center mb-3" id="linea-ubicacion">
+        <label for="ciudad" class="form-label fw-semibold me-1 mb-0">Ciudad:</label>
+        <input type="text" id="ciudad" class="form-control d-inline-block w-auto me-3 mb-1" placeholder="Ej.: Madrid">
+
+        <label for="radio" class="form-label fw-semibold me-1 mb-0">Radio (km):</label>
+        <input type="number" id="radio" class="form-control d-inline-block w-auto mb-1" min="1" value="10">
+    </div>
+
+    <!-- Explicación 2 -->
+    <p class="text-muted small mb-1">Añade la franja de tiempo que quieras filtrar:</p>
+
+    <!-- Línea: fechas -->
+    <div class="row g-2 mb-3" id="linea-fechas">
+        <div class="col-auto">
+            <label for="fechaInicio" class="form-label mb-0">Fecha inicio:</label>
+            <input type="date" id="fechaInicio" name="fechaInicio" class="form-control">
+        </div>
+        <div class="col-auto">
+            <label for="fechaFin" class="form-label mb-0">Fecha fin:</label>
+            <input type="date" id="fechaFin" name="fechaFin" class="form-control">
+        </div>
+    </div>
+<!-- Explicación 3 -->
+    <p class="text-muted small mb-1">Despues de filtrar, puedes descargar los sensores y/o las imagenes de los sensores:</p>
+    <!-- Línea: botones -->
+    <div class="mb-3" id="linea-botones">
+        <button id="btn-filtrar"  class="btn btn-primary btn-lg me-2">
+            <i class="bi bi-funnel"></i> Filtrar
+        </button>
+        <button id="btn-reset"    class="btn btn-outline-secondary btn-lg me-2">
+            <i class="bi bi-arrow-clockwise"></i> Reset
+        </button>
+        <button id="btn-download"
+        class="btn btn-success btn-lg"
+        disabled>
+    <i class="bi bi-download"></i> Descargar CSV
+</button>
+
+<button id="btn-download-zip"
+        class="btn btn-warning btn-lg me-2"
+        disabled>
+  <i class="bi bi-file-zip"></i> Descargar imágenes
+</button>
+
+    </div>
+
+    <!-- Mapa Leaflet -->
+    <div id="map" style="height: 500px;"></div>
+</div>
+
+                </div>
+            </div>
+
+            <!--  LEYENDA  -->
+<div class="col-md-4">
+  <div class="card mb-4">
+    <div class="card-header bg-info text-white"><h5>Niveles de Polución</h5></div>
+    <div class="card-body">
+      <div class="leyenda-item mb-2">
+        <span class="leyenda-color extremo"></span>
+        Extremo  (≥ 150 μg/m³)
+      </div>
+      <div class="leyenda-item mb-2">
+        <span class="leyenda-color alto"></span>
+        Alto  (50 – 149 μg/m³)
+      </div>
+      <div class="leyenda-item mb-2">
+        <span class="leyenda-color moderado"></span>
+        Moderado  (20 – 49 μg/m³)
+      </div>
+      <div class="leyenda-item mb-2">
+        <span class="leyenda-color bueno"></span>
+        Bueno  (10 – 19 μg/m³)
+      </div>
+      <div class="leyenda-item mb-2">
+        <span class="leyenda-color bajo"></span>
+        Bajo  (< 10 μg/m³)
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+        <!--  DETALLES SENSOR  -->
+        <div class="card mb-4" id="datos">
+            <div class="card-header bg-primary text-white"><h5>Datos del Sensor Seleccionado</h5></div>
+            <div class="card-body"><div id="detalle-sensor" class="text-center"><p>Seleccione un sensor en el mapa para ver los detalles</p></div></div>
+        </div>
+    </div>
+
+    <!-- ======  CHAT IA (Frontend ya adaptado en main.js)  ====== -->
+    <div id="chat-container" style="position:fixed;bottom:20px;right:20px;width:300px;background:#fff;border:1px solid #ccc;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.2);z-index:1000;">
+        <div style="background:#007bff;color:#fff;padding:10px;border-top-left-radius:10px;border-top-right-radius:10px;">Chat IA sobre sensores</div>
+        <div id="chat-messages" style="padding:10px;height:200px;overflow-y:auto;"></div>
+        <div style="padding:10px;border-top:1px solid #ccc;display:flex;gap:5px;">
+            <input type="text" id="chat-input" placeholder="Pregunta algo..." style="flex:1;padding:5px;">
+            <button id="chat-send" class="btn btn-primary btn-sm">Enviar</button>
+        </div>
+    </div>
+
+    <!-- ======  SCRIPTS  ====== -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Leaflet-heat (para mapa de calor) -->
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+    <!-- JSZip (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+    <!-- Tu lógica -->
+    <script src="js/map.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
